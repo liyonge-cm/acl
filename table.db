@@ -1,0 +1,97 @@
+CREATE TABLE `namespace` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `namespace` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '项目组标识',
+  `parent` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT '' COMMENT '所属父项目组',
+  `name` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '""' COMMENT '项目组中文名',
+  `describe` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT '""' COMMENT '描述',
+  `operator` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '创建人',
+  `status` int(1) NOT NULL COMMENT '状态: 0:正常，-1:删除',
+  `created_at` int(20) NOT NULL COMMENT '创建时间',
+  `updated_at` int(20) NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique-namspace` (`namespace`),
+  UNIQUE KEY `unique-name` (`name`),
+  KEY `index-namespace` (`namespace`),
+  KEY `ref_namespace-user` (`operator`),
+  KEY `ref_namespace-parent` (`parent`)
+) ENGINE=InnoDB AUTO_INCREMENT=30017 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+
+CREATE TABLE `resource` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `namespace` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '所属项目组',
+  `category` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT '""' COMMENT '资源分类',
+  `resource` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '资源标识',
+  `properties` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT '资源属性 (JSON Schema)',
+  `name` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '""' COMMENT '资源中文名',
+  `describe` text CHARACTER SET utf8 COLLATE utf8_bin COMMENT '描述',
+  `operator` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '创建人',
+  `status` int(1) NOT NULL COMMENT '状态: 0:正常，-1:删除',
+  `created_at` int(20) NOT NULL COMMENT '创建时间',
+  `updated_at` int(20) NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `index-namespace_resource` (`namespace`,`resource`)
+) ENGINE=InnoDB AUTO_INCREMENT=210501 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+CREATE TABLE `role` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `namespace` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '所属项目组',
+  `role` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '角色标识',
+  `name` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '角色中文名',
+  `describe` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT '' COMMENT '描述',
+  `operator` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '创建人',
+  `status` int(1) NOT NULL COMMENT '状态: 0:正常，-1:删除',
+  `created_at` int(20) NOT NULL COMMENT '创建时间',
+  `updated_at` int(20) NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique-namespace_role` (`namespace`,`role`),
+  UNIQUE KEY `unique-namespace_name` (`namespace`,`name`),
+  KEY `index-namespace_id` (`namespace`,`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=150053 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+CREATE TABLE `role_permission` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `namespace` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '所属项目组',
+  `role_id` int(11) unsigned NOT NULL COMMENT '角色ID',
+  `resource_id` int(11) unsigned NOT NULL COMMENT '资源ID',
+  `describe` text CHARACTER SET utf8 COLLATE utf8_bin COMMENT '描述',
+  `operator` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '创建人',
+  `status` int(1) NOT NULL COMMENT '状态: 0:正常，-1:删除',
+  `created_at` int(20) NOT NULL COMMENT '创建时间',
+  `updated_at` int(20) NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique-namespace-role-resource` (`namespace`,`role_id`,`resource_id`),
+  KEY `ref_permission-role` (`role_id`),
+  KEY `ref_permission-resource` (`resource_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=214388 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+CREATE TABLE `user` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自有id, 应该是不会使用的',
+  `o_id` int(10) NOT NULL COMMENT 'oa那边的Id',
+  `user` varchar(512) NOT NULL COMMENT '用户英文名',
+  `name` varchar(512) NOT NULL COMMENT '用户中文名',
+  `job` varchar(512) NOT NULL DEFAULT '' COMMENT '职位名称',
+  `phone_number` varchar(512) NOT NULL DEFAULT '' COMMENT '手机号码',
+  `email` varchar(512) NOT NULL DEFAULT '' COMMENT '邮箱',
+  `status` int(1) NOT NULL COMMENT '状态: 0:正常，-1:删除',
+  `created_at` int(20) NOT NULL COMMENT '创建时间',
+  `updated_at` int(20) NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `o_id` (`o_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=236 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `user_role` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `namespace` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '所属项目组',
+  `user` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '用户标识',
+  `role_id` int(11) unsigned NOT NULL COMMENT '角色ID',
+  `operator` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '创建人',
+  `status` int(1) NOT NULL COMMENT '状态: 0:正常，-1:删除',
+  `created_at` int(20) NOT NULL COMMENT '创建时间',
+  `updated_at` int(20) NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique-namespace-user_role_id` (`namespace`,`user`,`role_id`),
+  KEY `index-namspace-user-role_id-status` (`namespace`,`user`,`role_id`,`status`),
+  KEY `ref_user_role-role` (`role_id`),
+  KEY `user` (`user`)
+) ENGINE=InnoDB AUTO_INCREMENT=182396 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;

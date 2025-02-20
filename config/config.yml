@@ -1,0 +1,33 @@
+service:
+  port: 8080
+
+frame:
+  out_path: ..
+  prj_name: acl
+  json_case: ""
+
+api:
+  tables: 
+    - user
+    - role
+    - namespace
+    - resource
+    - user_role
+    - role_permission
+
+mysql:
+  endpoint: localhost:3306
+  username: root
+  password: 123456
+  database: acl
+  max_idle_conns: 3
+  max_open_conns: 3
+
+# mysql:
+#   endpoint: 10.72.136.58:3306
+#   username: root
+#   password: ucloud.cn0
+#   database: uacl
+#   max_idle_conns: 3
+#   max_open_conns: 3
+
