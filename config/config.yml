@@ -22,12 +22,3 @@ mysql:
   database: acl
   max_idle_conns: 3
   max_open_conns: 3
-
-# mysql:
-#   endpoint: 10.72.136.58:3306
-#   username: root
-#   password: ucloud.cn0
-#   database: uacl
-#   max_idle_conns: 3
-#   max_open_conns: 3
-
